@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import Card from './components/card/card';
 import Header from './components/layout/header';
 import Footer from './components/layout/footer';
+import Login from './views/login';
+import Home from './views/home';
+import Signup from './views/signup';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Editor from './views/editor';
+import Article from './views/article';
+
 
 class App extends React.Component<any, any> {
 
@@ -11,26 +18,17 @@ class App extends React.Component<any, any> {
     return(
       <div>
 
+       <BrowserRouter>
         <Header/>
-
-        <section>
-
-          <div className={"grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 w-fit relative m-auto"}>
-
-            <Card/>
-            <Card/>
-            <Card/>
-            <Card/>
-            <Card/>
-
-
-          </div>
-
-         
-
-        </section>
-
+        <Routes>
+          <Route path={"/"} element={<Home/>} />
+          <Route path={"/signin"} element={<Login/>} />
+          <Route path={"/signup"} element={<Signup/>}/>
+          <Route path={"/editor"} element={<Editor/>}/>
+          <Route path={"/article"} element={<Article/>}/>
+        </Routes>
         <Footer/>
+       </BrowserRouter>
 
       </div>
     );
