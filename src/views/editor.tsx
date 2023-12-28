@@ -12,7 +12,6 @@ class Editor extends React.Component<any, any> {
   }
 
   hanldeEditor = (html): void => {
-    console.log(html);
     this.setState({ value: html})
   };
 

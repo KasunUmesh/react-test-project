@@ -13,10 +13,10 @@ interface Props {
 
 class Input extends React.Component<Props, any> {
 
-  handleInput = (e: object): void => {
-    console.log(e.target.value);
+  // handleInput = (e: object): void => {
+  //   console.log(e.target.value);
     
-  };
+  // };
 
   render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | Iterable<React.ReactNode> | React.ReactPortal | boolean | any | null | undefined {
     return(

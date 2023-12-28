@@ -1,40 +1,46 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Input from '../components/input/input';
 import * as validator from '../utils/validator';
 
-interface state {
+interface State {
   email: string,
   password: string,
   errorMsg: string
 }
 
-class Login extends React.Component<any, state> {
+function Login(): JSX.Element {
 
-  state = {
-    email: '',
-    password: '',
-    errorMsg: ''
-  }
+  // Class Component using state
+  // state = {
+  //   email: '',
+  //   password: '',
+  //   errorMsg: ''
+  // }
 
-  handleInput = (e, type): void => {
+  const[email, setEmail] = useState('');
+  const[password, setPassword] = useState('');
+  const[errorMsg, setErrorMsg] = useState('');
+   
+
+  const handleInput = (e, type): void => {
     switch (type) {
       case 'email':
-        this.setState({...this.state, email: e.target.value})
+        // this.setState({...this.state, email: e.target.value})
+        setEmail(e.target.value);
         break;
       case 'password':
-        this.setState({...this.state, password: e.target.value})
+        // this.setState({...this.state, password: e.target.value})
+        setPassword(e.target.value);
         break;
     }
 
   } 
 
-  handleLogin = (): void => {
-    let email = this.state.email;
-    let password = this.state.password;
+  const handleLogin = (): void => {
 
     let isValidInputs = true;
     let errorMsg = "";
@@ -49,14 +55,12 @@ class Login extends React.Component<any, state> {
     }
 
     if(isValidInputs) {
-      // send data backend
+      // send data to backend
     } else {
-      this.setState({...this.state, errorMsg: errorMsg});
+      setErrorMsg(errorMsg);
     }
 
   }
-
-  render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | Iterable<React.ReactNode> | React.ReactPortal | boolean | any | null | undefined {
     return(
 
       <section className={'flex justify-center items-center p-5'}>
@@ -75,7 +79,7 @@ class Login extends React.Component<any, state> {
                 label={'Email'}
                 placeholder={'Enter your email'}
                 optional={false}
-                callBack={this.handleInput}/>
+                callBack={handleInput}/>
 
               <Input
                 type={'password'}
@@ -83,17 +87,17 @@ class Login extends React.Component<any, state> {
                 label={'Password'}
                 placeholder={'Enter your password'}
                 optional={false}
-                callBack={this.handleInput}/>
+                callBack={handleInput}/>
           </div>
 
           <div className={'text-center mt-5'}>
-            <button className={'main-btn'} onClick={this.handleLogin}>Sign In</button>
+            <button className={'main-btn'} onClick={handleLogin}>Sign In</button>
           </div>
 
           {
-            this.state.errorMsg && 
+            errorMsg && 
               <div className={"bg-red-100 text-center p-2 m-2"}>
-                {this.state.errorMsg}
+                {errorMsg}
               </div>
           }
 
@@ -107,7 +111,6 @@ class Login extends React.Component<any, state> {
       </section>
 
     );
-  }
 
 }
 

@@ -9,6 +9,7 @@ import Signup from './views/signup';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Editor from './views/editor';
 import Article from './views/article';
+import MyArticles from './views/my-articles';
 
 
 class App extends React.Component<any, any> {
@@ -26,6 +27,7 @@ class App extends React.Component<any, any> {
           <Route path={"/signup"} element={<Signup/>}/>
           <Route path={"/editor"} element={<Editor/>}/>
           <Route path={"/article"} element={<Article/>}/>
+          <Route path={"/my-articles"} element={<MyArticles/>}/>
         </Routes>
         <Footer/>
        </BrowserRouter>
