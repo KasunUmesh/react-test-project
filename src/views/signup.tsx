@@ -1,10 +1,82 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Link } from "react-router-dom";
 import Input from '../components/input/input';
+import { useState } from 'react';
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
-class Signup extends React.Component<any, any> {
-  render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | Iterable<React.ReactNode> | React.ReactPortal | boolean | any | null | undefined {
+function Signup(): JSX.Element {
+
+  const [fname, setFname] = useState<string>("");
+  const [lname, setLname] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleInputs = (e: any, type: string) => {
+    switch (type) {
+      case 'fname':
+        setFname(e.target.value);
+        break;
+      case 'lname':
+        setLname(e.target.value);
+        break;
+      case 'username':
+        setUsername(e.target.value);
+        break;
+      case 'email':
+        setEmail(e.target.value);
+        break;
+      case 'password':
+        setPassword(e.target.value);
+        break;
+    }
+  }
+
+  const validateSubmition = () => {
+    // validation
+    if(fname && lname && username && email && password) {
+       submitNewUser();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Inputs",
+        text: "Please enter valid inputs"
+      });
+    }
+  }
+
+  const submitNewUser = () => {
+
+    const headers = {'Content-Type': 'application/json'}
+
+    let body = {
+      username: username,
+      fname: fname,
+      lname: lname,
+      email: email,
+      password: password
+    }
+
+    axios.post("http://localhost:8081/user", body, {headers: headers}).then(r => {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User saved successfully!"
+      });
+    }).catch(err => {
+      Swal.fire({
+        icon: "error",
+        title: "Sorry!",
+        text: "Something went wrong"
+      });
+    })
+
+  }
+  
     return(
       <section className={'flex justify-center items-center p-5'}>
         <div className={'w-fit p-10 border shadow-xl rounded-xl'}>
@@ -24,14 +96,16 @@ class Signup extends React.Component<any, any> {
                 name={'fname'}
                 label={'First Name'}
                 placeholder={'Enter your first name'}
-                optional={false}/>
+                optional={false}
+                callBack={handleInputs}/>
 
               <Input
                 type={'text'}
                 name={'lname'}
                 label={'Last Name'}
                 placeholder={'Enter your last name'}
-                optional={false}/>
+                optional={false}
+                callBack={handleInputs}/>
 
             </div>
 
@@ -40,25 +114,28 @@ class Signup extends React.Component<any, any> {
               name={'username'}
               label={'Username'}
               placeholder={'Enter your username'}
-              optional={false}/>
+              optional={false}
+              callBack={handleInputs}/>
 
             <Input
               type={'email'}
               name={'email'}
               label={'Email'}
               placeholder={'Enter your email'}
-              optional={false}/>
+              optional={false}
+              callBack={handleInputs}/>
 
             <Input
               type={'password'}
               name={'password'}
               label={'Password'}
               placeholder={'Enter your password'}
-              optional={false}/>
+              optional={false}
+              callBack={handleInputs}/>
           </div>
 
           <div className={'text-center mt-5'}>
-          <button className={'main-btn'}>Sign In</button>
+            <button className={'main-btn'} onClick={validateSubmition}>Sign Up</button>
           </div>
 
           <div className={'text-center mt-5'}>
@@ -68,7 +145,7 @@ class Signup extends React.Component<any, any> {
         </div>
       </section>
     );
-  }
+  
 }
 
 export default Signup;

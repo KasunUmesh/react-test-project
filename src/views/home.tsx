@@ -7,12 +7,11 @@ import axios from 'axios';
 interface Data {
   id: number,
   title: string,
-  body: string
+  description: string
 }
 
 
 function Home(): JSX.Element {
-
 
   const[data, setData] = useState<Data[]>([]);
 
@@ -21,8 +20,8 @@ function Home(): JSX.Element {
    */
 
   const fetchData = (): void => {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then(Response => {
-      setData(Response.data);
+    axios.get('http://localhost:8081/article').then(Response => {
+      setData(Response.data.data);
     }).catch(err => {
       alert(err);
     })
@@ -44,7 +43,7 @@ function Home(): JSX.Element {
 
           {
            data.map((r: Data, index: number) => {
-            return <Card title={r.title} content={r.body}/>
+            return <Card title={r.title} content={r.description}/>
            })
           }
 

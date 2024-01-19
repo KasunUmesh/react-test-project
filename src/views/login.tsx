@@ -5,6 +5,10 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import Input from '../components/input/input';
 import * as validator from '../utils/validator';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 interface State {
   email: string,
@@ -14,12 +18,7 @@ interface State {
 
 function Login(): JSX.Element {
 
-  // Class Component using state
-  // state = {
-  //   email: '',
-  //   password: '',
-  //   errorMsg: ''
-  // }
+  const navigate = useNavigate();
 
   const[email, setEmail] = useState('');
   const[password, setPassword] = useState('');
@@ -56,6 +55,27 @@ function Login(): JSX.Element {
 
     if(isValidInputs) {
       // send data to backend
+      const headers = {'Content-Type': 'application/json'}
+      let body = {
+        email: email,
+        password: password
+      }
+      axios.post("http://localhost:8081/user/auth", body, {headers: headers})
+          .then(r => {
+            
+            Cookies.set("token", r.data.data.accessToken);
+            Cookies.set("user", JSON.stringify(r.data.data.user));
+            navigate("/");
+
+          })
+          .catch(e => {
+            Swal.fire({
+              icon: "error",
+              title: "Sorry!",
+              text: "Something went wrong"
+            });
+          })
+
     } else {
       setErrorMsg(errorMsg);
     }

@@ -1,27 +1,117 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Input from '../components/input/input';
 import * as ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import Swal from "sweetalert2";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import {useLocation, useNavigate} from "react-router-dom";
 
-class Editor extends React.Component<any, any> {
+function Editor(): JSX.Element {
 
-  state = {
-    value: ""
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  let article = location?.state?.article;
+
+  const [title, setTitle] = useState<string>(article?article.title: "");
+  const [description, setDescription] = useState<string>(article?article.description: "");
+
+  useEffect(()=>{
+    //get token
+    const ACCESS_TOKEN = Cookies.get("token");
+    //check token -> redirect
+    if(!ACCESS_TOKEN) {
+        navigate("/signin");
+    }
+  }, []);
+
+  const handleTitle = (e:any, type:string) => {
+    setTitle(e.target.value);
   }
 
-  hanldeEditor = (html): void => {
-    this.setState({ value: html})
-  };
+  const handleEditor = (html): void => {
+    console.log(html);
+    setDescription(html)
+  }
 
-  render(): React.ReactElement<any, string | React.JSXElementConstructor<any>> | string | number | Iterable<React.ReactNode> | React.ReactPortal | boolean | any | null | undefined {
+  const validateSubmission = () => {
+    if(title && description) {
+      submitArticle();
+    } else {
+      Swal.fire({
+          icon: "error",
+          title: "Invalid Inputs",
+          text: "Please enter valid inputs"
+      });
+    }
+  }
+
+  const submitArticle = () => {
+
+    const ACCESS_TOKEN = Cookies.get("token");
+
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': ACCESS_TOKEN
+    }
+
+    let body = article ? {
+      id: article._id,
+      title: title,
+      description: description
+    } : {
+      title: title,
+      description: description
+    }
+
+    if(article) {
+      axios.put("http://localhost:8081/article", body, {headers: headers})
+          .then(r => {
+              Swal.fire({
+                  icon: "success",
+                  title: "Success!",
+                  text: "Article updated successfully!"
+              });
+              navigate('/my-articles');
+          })
+          .catch(e => {
+              Swal.fire({
+                  icon: "error",
+                  title: "Sorry!",
+                  text: "Something went wrong"
+              });
+          })
+    } else {
+      axios.post("http://localhost:8081/article", body, {headers: headers})
+          .then(r => {
+              Swal.fire({
+                  icon: "success",
+                  title: "Success!",
+                  text: "Article created successfully!"
+              });
+              navigate('/my-articles');
+          })
+          .catch(e => {
+              Swal.fire({
+                  icon: "error",
+                  title: "Sorry!",
+                  text: "Something went wrong"
+              });
+          })
+    }
+}
+
     return(
       <section className={'px-28'}>
 
         <div className={'text-right mt-5'}>
           <button className={'second-btn mr-1'}>Clear</button>
-          <button className={'main-btn ml-1'}>Publish</button>
+          <button className={'main-btn ml-1'} onClick={validateSubmission}>{ article? "Update":"Publish" }</button>
         </div>
 
         <Input
@@ -29,15 +119,17 @@ class Editor extends React.Component<any, any> {
           name={'title'}
           label={'Title'}
           placeholder={'Enter the title'}
-          optional={false}/>
+          optional={false}
+          callBack={handleTitle}
+          value={title}/>
 
         <div className={'m-2'}>
-            <ReactQuill theme="snow" value={this.state.value} onChange={this.hanldeEditor} />
+            <ReactQuill theme="snow" value={description} onChange={handleEditor} />
         </div>
 
       </section>
     );
-  }
+  
 
 }
 
